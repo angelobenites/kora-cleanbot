@@ -1,2 +1,11 @@
 __pycache__/
 .env.*
+.env
+.idea/
+.vscode/
+.next/
+.gitignore
+.devs
+devs.md
+developers.md
+kora.tcc
