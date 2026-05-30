@@ -10,9 +10,10 @@ is_person_present = False
 is_waste_present = False
 
 WASTE_CLASSES = {
-    "backpack", "umbrella", "handbag", "tie", "suitcase", 
-    "bottle", "cup", "fork", "knife", "spoon", "bowl"
+    "bottle", "cup", "fork", "knife", "spoon", "bowl",
+    "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "pizza", "donut", "cake",
 }
+
 
 if not cap.isOpened():
     print("Error: No se pudo abrir la cámara web.")

@@ -27,3 +27,4 @@ def kora_detect(object="person"):
                data = json.load(file)
                kora_voice(data["download"] or "Hola, por el momento no puedo hablar.")
                print(Back.MAGENTA + Fore.WHITE + "Kora:" + Style.RESET_ALL + " " + data["download"] or "Hola, por el momento no puedo hablar.")
+
