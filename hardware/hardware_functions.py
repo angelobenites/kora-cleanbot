@@ -8,7 +8,7 @@ init()
 
 def clean_off():
      motor.off()
-     print(Fore.WHITE + Back.RED + "System:" + Style.RESET_ALL + " Motor apagado.")
+     print(Fore.WHITE + Back.BLUE + "System:" + Style.RESET_ALL + " Motor apagado.")
 
 def clean(seg=7):
      try:
