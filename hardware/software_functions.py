@@ -15,7 +15,6 @@ db.execute('''
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           names TEXT NOT NULL,
           surnames TEXT NOT NULL,
-          email TEXT NOT NULL UNIQUE,
           code TEXT NOT NULL UNIQUE,
           points INTEGER DEFAULT 0,
           range TEXT DEFAULT 'Bronce',
@@ -48,8 +47,8 @@ def kora_detect(object="person"):
 def user_register(data):
      try:
           db.execute('''
-               INSERT INTO users (names, surnames, email, code) VALUES (?, ?, ?, ?)
-          ''', (data["names"], data["surnames"], data["email"], data["code"]))
+               INSERT INTO users (names, surnames, code) VALUES (?, ?, ?)
+          ''', (data["names"], data["surnames"], data["code"]))
           conn.commit()
           return True
      except sqlite3.IntegrityError:
@@ -118,3 +117,4 @@ def get_users():
     for usuario in usuarios:
          os.system('cls' if os.name == 'nt' else 'clear')
          print(f"ID: {usuario[0]}, Nombre: {usuario[1]}, Rango: {usuario[2]}, Puntos: {usuario[3]}")
+

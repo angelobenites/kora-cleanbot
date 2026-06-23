@@ -1,22 +1,24 @@
 import cv2
 from ultralytics import YOLO
-from hardware_functions import detected_person, detected_waste
+from hardware_functions import detected_person, detected_waste, detected_completed
+from tts import kora_voice
 import threading
-import socketio
+# import socketio
 import time
 import sqlite3
+import os
 
 
 
-sio = socketio.Client()
+# sio = socketio.Client()
 
-try:
-    sio.connect('http://localhost:5000')
-    print("Conectado al servidor Flask con éxito.")
-except Exception as e:
-    print(f"No se pudo conectar a Flask: {e}")
+# try:
+#     # sio.connect('http://localhost:5000')
+#     print("Conectado al servidor Flask con éxito.")
+# except Exception as e:
+#     print(f"No se pudo conectar a Flask: {e}")
 
-model = YOLO("models/yolov8n.pt")
+model = YOLO("models/yolo11n.pt")
 cap = cv2.VideoCapture(0)
 
 is_person_present = False
@@ -42,7 +44,6 @@ db.execute('''
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           names TEXT NOT NULL,
           surnames TEXT NOT NULL,
-          email TEXT NOT NULL UNIQUE,
           code TEXT NOT NULL UNIQUE,
           points INTEGER DEFAULT 0,
           range TEXT DEFAULT 'Bronce',
@@ -67,18 +68,18 @@ while True:
 
             if class_name == "person":
                 person_detected_in_frame = True
-                sio.emit('nueva_deteccion', {
-                    'objeto': "person",
-                    'confianza': float(r.boxes.conf[0]),
-                    'timestamp': time.strftime("%H:%M:%S")
-                })
+                # sio.emit('nueva_deteccion', {
+                #     'objeto': "person",
+                #     'confianza': float(r.boxes.conf[0]),
+                #     'timestamp': time.strftime("%H:%M:%S")
+                # })
             elif class_name in WASTE_CLASSES:
                 waste_detected_in_frame = True
-                sio.emit('nueva_deteccion', {
-                    'objeto': "waste",
-                    'confianza': float(r.boxes.conf[0]),
-                    'timestamp': time.strftime("%H:%M:%S")
-                })
+                # sio.emit('nueva_deteccion', {
+                #     'objeto': "waste",
+                #     'confianza': float(r.boxes.conf[0]),
+                #     'timestamp': time.strftime("%H:%M:%S")
+                # })
 
     if person_detected_in_frame and not is_person_present:
         is_person_present = True
@@ -94,7 +95,13 @@ while True:
 
     cv2.imshow("Detección de Objetos YOLOv8 en Vivo", draw_frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('s') or key == ord('t'):
+        detected_completed()
+    elif key == ord('c'):
+        os.system('py create_user.py')
+    elif key == ord('q'):
+        kora_voice("Apagando el sistema. ¡Hasta luego!")
         break
 
 cap.release()

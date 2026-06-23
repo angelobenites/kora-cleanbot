@@ -32,3 +32,4 @@ def detected_waste():
 def detected_completed():
      print(Fore.WHITE + Back.BLUE + "System:" + Style.RESET_ALL + " Contenedor Lleno.")
      kora_detect("completed")
+     
