@@ -4,13 +4,13 @@ Robot de limpieza inteligente. Recoge la suciedad en segundos.
 
 ## Modelos de IA en uso
 
-- YOLO - `yolov8n`: Modelo para detectar objetos.
+- YOLO - `yolov11n` & `yolo11n-face`: Modelo para detectar objetos y comparación de rostros.
 - Kora Local - `kora-local-cleanbot`: Modelo para respuestas automáticas offline.
 - Edge TTS - `edge-tts`: Modelo para Text To Speech.
 
 ## Próximas integraciones
 
-- Cambio de modelo para respuestas de `kora-local-cleanbot` al modelo `kora-1.0-pro`.
+- Mejoras en el rendimiento.
 
 ## Links
 
