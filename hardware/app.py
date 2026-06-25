@@ -27,7 +27,7 @@ if not cap.isOpened():
     print("Error: No se pudo abrir la cámara web.")
     exit()
 
-conn = sqlite3.connect('kora_cleanbot_database.db')
+conn = sqlite3.connect('db/kora_cleanbot_database.db')
 db = conn.cursor()
 
 db.execute('''
@@ -38,6 +38,7 @@ db.execute('''
           code TEXT NOT NULL UNIQUE,
           points INTEGER DEFAULT 0,
           range TEXT DEFAULT 'Bronce',
+          face_id BLOB NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
      )
 ''')
