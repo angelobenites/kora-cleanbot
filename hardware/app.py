@@ -129,10 +129,10 @@ while True:
     cv2.imshow("Kora CleanBot", draw_frame)
 
     key = cv2.waitKey(1) & 0xFF
-    if key == ord('s') or key == ord('t'):
+    if key == ord('c') or key == ord('c'):
         detected_completed()
-    elif key == ord('c'):
-        os.system('py create_user.py')
+    elif key == ord('w'):
+        os.system('start http://localhost:5173')
     elif key == ord('q'):
         kora_voice("Apagando")
         break

@@ -22,7 +22,6 @@ Para su el correcto desenvolvimiento del robot en sus tareas, usamos potentes mo
 
 - Cambio de modelo de respuesta de texto. Pasar de `kora-local-cleanbot` a `kora-1.0-pro`.
 - Mejoras en el rendimiento.
-- Creación de usuarios mediante UI.
 - Gamificación funcional mediante UI.
 
 ## Links
