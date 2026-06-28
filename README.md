@@ -26,5 +26,5 @@ Para su el correcto desenvolvimiento del robot en sus tareas, usamos potentes mo
 
 ## Links
 
-- [Potencial de Kora 1.0 Pro](https://teccoraedu.vercel.app/blog/kora-esta-fuerte).
+- [Potencial de Kora 1.0 Pro](https://teccoraedu.vercel.app/blog/kora-esta-fuerte)
 - [Modelos disponibles en Teccora AI](https://teccora.vercel.app/blog/modelos-de-kora)
