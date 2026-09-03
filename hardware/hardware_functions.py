@@ -7,13 +7,13 @@ init()
 # motor = OutputDevice(17)
 
 def clean_off():
-     motor.off()
+     # motor.off()
      print(Fore.WHITE + Back.BLUE + "System:" + Style.RESET_ALL + " Motor apagado.")
 
 def clean(seg=7):
      try:
           print(Fore.WHITE + Back.GREEN + "System:" + Style.RESET_ALL + " Iniciando ciclo de limpieza...")
-          motor.on()
+          # motor.on()
           time.sleep(seg)
           clean_off()
      except KeyboardInterrupt:

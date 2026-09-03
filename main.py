@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
+from hardware.status import get_status
 
 
 app = Flask(__name__)
@@ -30,6 +31,10 @@ def init_db():
 @app.route('/')
 def home():
      return "Hello World"
+
+@app.get('/faces')
+def faces():
+    return jsonify(get_status())
 
 def get_db():
     conn = sqlite3.connect(DATABASE)
@@ -78,15 +83,6 @@ def register():
 
     finally:
         conn.close()
-
-
-@socketio.on('nueva_deteccion')
-def handle_detection(data):
-     emit('render_detection', data or {
-          'objeto': "desconocido",
-          'confianza': 0.0,
-          'timestamp': "00:00:00"
-     }, broadcast=True)
 
 if __name__ == '__main__':
      init_db()
