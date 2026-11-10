@@ -3,8 +3,8 @@ from ultralytics import YOLO
 from hardware_functions import detected_person, detected_waste, detected_completed
 from tts import kora_voice
 from status import update_status
+from realtime import publish_detection
 import threading
-import sqlite3
 import os
 
 # Cargar únicamente el modelo de objetos YOLOv8 nano
@@ -25,23 +25,6 @@ if not cap.isOpened():
     print("Error: No se pudo abrir la cámara web.")
     exit()
 
-# Base de datos simplificada (se remueve face_id al no usar rostros)
-conn = sqlite3.connect('db/kora_cleanbot_database.db')
-db = conn.cursor()
-
-db.execute('''
-     CREATE TABLE IF NOT EXISTS users (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          names TEXT NOT NULL,
-          surnames TEXT NOT NULL,
-          code TEXT NOT NULL UNIQUE,
-          points INTEGER DEFAULT 0,
-          range TEXT DEFAULT 'Bronce',
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-     )
-''')
-conn.commit()
-
 while True:
     ret, frame = cap.read()
     if not ret:
@@ -54,6 +37,7 @@ while True:
     
     waste_detected_in_frame = False
     person_detected_in_frame = False
+    detected_objects_in_frame = set()
 
     for r in results:
         for box in r.boxes:
@@ -64,6 +48,7 @@ while True:
             # Detectar residuos
             if class_name in WASTE_CLASSES:
                 waste_detected_in_frame = True
+                detected_objects_in_frame.add((class_name, "waste"))
                 cv2.rectangle(draw_frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
                 cv2.putText(draw_frame, class_name, (x1, y1 - 10), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -71,9 +56,15 @@ while True:
             # Detectar personas usando el modelo YOLO de objetos
             elif class_name == "person":
                 person_detected_in_frame = True
+                detected_objects_in_frame.add((class_name, "person"))
                 cv2.rectangle(draw_frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
                 cv2.putText(draw_frame, "Persona", (x1, y1 - 10), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            else:
+                detected_objects_in_frame.add((class_name, "other"))
+                cv2.rectangle(draw_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(draw_frame, class_name, (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
     # Evento al detectar o dejar de detectar personas
     if person_detected_in_frame and not is_person_present:
@@ -91,9 +82,19 @@ while True:
 
     # Actualizar estado global del robot
     visible_object = "person" if person_detected_in_frame else (
-        "waste" if waste_detected_in_frame else None
+        "waste" if waste_detected_in_frame else (
+            "other" if detected_objects_in_frame else None
+        )
     )
     update_status(object_type=visible_object, tank_full=tank_full)
+    publish_detection(
+        object_type=visible_object,
+        detected_objects=[
+            {"name": name, "category": category}
+            for name, category in sorted(detected_objects_in_frame)
+        ],
+        tank_full=tank_full,
+    )
 
     # Mostrar ventana
     cv2.imshow("Kora CleanBot", draw_frame)
@@ -112,4 +113,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-conn.close()
